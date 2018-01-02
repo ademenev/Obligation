@@ -14,8 +14,7 @@ This is called a settled promise.
 
 Each promise has an associated `Context` on which promised operation is executed.
 
-## Installation
-
+## Basic usage
 
 The key pattern for working with promises is *promise chaining*. You chain promises by calling
 `then`, `catch`, `recover` methods and providing callbacks to be executed when the promise is
