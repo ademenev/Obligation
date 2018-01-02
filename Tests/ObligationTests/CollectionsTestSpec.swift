@@ -343,7 +343,7 @@ class CollectionsTestSpec: QuickSpec {
         
         describe ("'reduce'") {
             describe ("reduces a collection of values") {
-                it ("resolving if reducer is fulfilled") {
+                it ("fulfilling if reducer is fulfilled") {
                     self.reduceTest(failedPromise: false, failedMapper: false) { reducer in
                         return self.values.reduce(on: self.context, 0) { value in
                             return reducer(value)
@@ -368,7 +368,7 @@ class CollectionsTestSpec: QuickSpec {
             
             describe ("reduces a collection of promises") {
                 describe("with reducer returning a value") {
-                    it ("resolving if all promises are fulfilled") {
+                    it ("fulfilling if all promises are fulfilled") {
                         noErrors {
                             return self.mappedOriginalPromises.reduce(on: self.context, 0, self.reducer).then { value in
                                 expect(value).to(equal(self.reducedValue))
@@ -394,7 +394,7 @@ class CollectionsTestSpec: QuickSpec {
 
             describe ("reduces a collection of promises") {
                 describe("with reducer returning a promise") {
-                    it ("resolving if all promises are fulfilled") {
+                    it ("fulfilling if all promises are fulfilled") {
                         noErrors {
                             return self.mappedOriginalPromises.reduce(on: self.context, 0, self.promisedReducer).then { value in
                                 return Promise.fulfilled(on: self.context, value).then {value in
@@ -428,7 +428,7 @@ class CollectionsTestSpec: QuickSpec {
         describe ("'filter'") {
             describe ("filters a collection of promises") {
                 describe ("with filter returning a value") {
-                    it ("resolving if all promises are fulfilled") {
+                    it ("fulfilling if all promises are fulfilled") {
                         noErrors {
                             return self.mappedOriginalPromises.filter(on: self.context, self.filter)
                         }
@@ -447,7 +447,7 @@ class CollectionsTestSpec: QuickSpec {
                     }
                 }
                 describe ("with filter returning a promise") {
-                    it ("resolving if all promises are fulfilled") {
+                    it ("fulfilling if all promises are fulfilled") {
                         self.filterTest(failedPromise: false, failedMapper: false) { filter in
                             return self.mappedOriginalPromises.filter(on: self.context, concurrency: desiredConcurrency, filter)
                         }
@@ -473,7 +473,7 @@ class CollectionsTestSpec: QuickSpec {
             }
             describe ("filters a collection of values") {
                 describe ("with filter returning a promise") {
-                    it("resolving if filter is fulfilled") {
+                    it("fulfilling if filter is fulfilled") {
                         self.filterTest(failedPromise: false, failedMapper: false) { filter in
                             return self.values.filter(on: self.context, concurrency: desiredConcurrency, filter)
                         }
