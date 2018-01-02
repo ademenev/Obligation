@@ -1,0 +1,77 @@
+{
+    "module": "Obligation",
+    "author": "Andrey Demenev",
+    "author_url":  "https://github.com/ademenev",
+    "xcodebuild_arguments" : [
+        "-target",
+        "Obligation"
+    ],
+    "output": "docs",
+    "theme": "jazzy-theme",
+    "readme": "Readme.md",
+    "documentation": "docs-src/guides/*.md",
+    "abstract": "docs-src/sections/*.md",
+    "custom_categories": [
+        {
+            "name": "Documentation",
+            "children": [
+                "About Obligation"
+            ]
+        },
+        {
+            "name": "Promises",
+            "children": [
+                "PromiseProtocol",
+                "Promise",
+                "firstly(on:_:)",
+                "attempt(on:_:)"
+            ]
+        },
+        {
+            "name": "Collections",
+            "children": [
+                "Collection"
+            ]
+        },
+        {
+            "name": "Execution Context",
+            "children": [
+                "Context",
+                "InvalidationToken",
+                "DispatchQueue"
+            ]
+        },
+        {
+            "name": "Joins",
+            "children": [
+                "JoinOf2",
+                "JoinOf3",
+                "JoinOf4",
+                "JoinOf5"
+            ]
+        },
+        {
+            "name": "Resources",
+            "children" : [
+                "Disposable",
+                "DisposablePromise"
+            ]
+        },
+        {
+            "name": "Errors",
+            "children" : [
+                "AggregateError",
+                "TimeoutError"
+            ]
+        },
+        {
+            "name": "Functions",
+            "children": [
+                "identity(value:)",
+                "noop(value:)",
+                "setRejectionHandler(_:)"
+            ]
+        }
+    ]
+}
+

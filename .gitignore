@@ -1,0 +1,8 @@
+*~
+.DS_Store
+.test-build
+build
+.build
+Obligation.xcodeproj
+Packages
+docs

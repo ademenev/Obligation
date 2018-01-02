@@ -1,0 +1,3 @@
+#/bin/sh
+mv Package.swift .Package.swift && cp .Package.test.swift Package.swift && swift test --build-path .test-build $@
+mv .Package.swift Package.swift
