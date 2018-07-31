@@ -1,42 +1,40 @@
 import Foundation
 
 /**
-    A type representing a resource that can disposed
+ A type representing a resource that can disposed
 
-  */
+ */
 public protocol Disposable {
     /**
-      Disposes the resource
-      */
+     Disposes the resource
+     */
     func dispose() throws
 }
 
 /**
-  Composition of Disposable and PromiseProtocol
-  */
-public protocol DisposablePromise : Disposable, PromiseProtocol {
+ Composition of Disposable and PromiseProtocol
+ */
+public protocol DisposablePromise: Disposable, PromiseProtocol {
 }
 
 extension Promise {
     // MARK: Resource management
 
-
     /**
-        Performs an asynchronous  operation on disposable resource, and disposes the resource
-        after operation is finished, regardless of operation outcome.
+     Performs an asynchronous  operation on disposable resource, and disposes the resource
+     after operation is finished, regardless of operation outcome.
 
-        Both operation and disposal are executed on specified context,
-        defaulting to original promise context.
+     Both operation and disposal are executed on specified context,
+     defaulting to original promise context.
 
-        Returns a promise representing operation outcome
-      */
+     Returns a promise representing operation outcome
+     */
     public static func using<NewValue, PromiseType>(
         on context: Context? = nil,
         _ disposable: PromiseType,
         _ work: @escaping (Value) throws -> Promise<NewValue>)
-            -> Promise<NewValue> 
-                where PromiseType: DisposablePromise, PromiseType.ValueType == Value {
-
+        -> Promise<NewValue>
+        where PromiseType: DisposablePromise, PromiseType.ValueType == Value {
         return Promise<NewValue>(on: disposable.toPromise().context) { fulfill, reject in
             func dispose() throws {
                 try disposable.dispose()
@@ -69,26 +67,25 @@ extension Promise {
                     }
                 }
             },
-            rejected: reject);
+            rejected: reject)
         }
     }
 
     /**
-        Performs an asynchronous  operation on disposable resource, and disposes the resource
-        after operation is finished, regardless of operation outcome.
+     Performs an asynchronous  operation on disposable resource, and disposes the resource
+     after operation is finished, regardless of operation outcome.
 
-        Both operation and disposal are executed on specified context,
-        defaulting to original promise context.
+     Both operation and disposal are executed on specified context,
+     defaulting to original promise context.
 
-        Returns a promise representing operation outcome
-      */
+     Returns a promise representing operation outcome
+     */
     public static func using<NewValue, PromiseType>(
         on context: Context? = nil,
         _ disposable: PromiseType,
         _ work: @escaping (Value) throws -> NewValue)
-            -> Promise<NewValue> 
-                where PromiseType: DisposablePromise, PromiseType.ValueType == Value {
-
+        -> Promise<NewValue>
+        where PromiseType: DisposablePromise, PromiseType.ValueType == Value {
         return Promise<NewValue>(on: disposable.toPromise().context) { fulfill, reject in
             func dispose() throws {
                 try disposable.dispose()
@@ -112,7 +109,7 @@ extension Promise {
                     }
                 }
             },
-            rejected: reject);
+            rejected: reject)
         }
     }
 }

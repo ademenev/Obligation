@@ -1,36 +1,34 @@
-import Obligation
 import Foundation
+import Obligation
 
-import Quick
 import Nimble
+import Quick
 
 fileprivate let context = createContext(label: ctxLabel)
 
 class TimeoutTestSpec: QuickSpec {
-
-	override func spec() {
-
+    override func spec() {
         describe("'delay'") {
-			it("returns a promise that is fulfilled after specified time interval after original promise is fulfilled") {
+            it("returns a promise that is fulfilled after specified time interval after original promise is fulfilled") {
                 noErrors { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    let now : dispatch_time_t = DispatchTime.now().rawValue
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    let now: dispatch_time_t = DispatchTime.now().rawValue
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         promise.fulfill(100)
                     }
                     return promise.delay(0.02).then { (value) -> Int in
                         fulfilledAfterDelayAt = DispatchTime.now().rawValue
                         expect(value).to(equal(100))
-                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 30000000))
+                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 30_000_000))
                         return value
                     }
                 }
             }
-			it("returns a promise that is rejected immediately after original promise is rejected") {
+            it("returns a promise that is rejected immediately after original promise is rejected") {
                 expectError { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         promise.reject(MockError())
                     }
@@ -38,7 +36,7 @@ class TimeoutTestSpec: QuickSpec {
                         fulfilledAfterDelayAt = DispatchTime.now().rawValue
                         expect(value).to(equal(100))
                         return value
-                    }.catch {error in
+                    }.catch { error in
                         expect(fulfilledAfterDelayAt).to(equal(0))
                         throw error
                     }
@@ -46,12 +44,12 @@ class TimeoutTestSpec: QuickSpec {
             }
         }
         describe("'delay' with deadline") {
-			it("returns a promise that is fulfilled as soon as original promise is fulfilled, but not before deadline") {
+            it("returns a promise that is fulfilled as soon as original promise is fulfilled, but not before deadline") {
                 noErrors { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
                     let deadline = DispatchTime.now() + 0.02
                     let fulfillAt = DispatchTime.now() + 0.01
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: fulfillAt) {
                         promise.fulfill(100)
                     }
@@ -66,7 +64,7 @@ class TimeoutTestSpec: QuickSpec {
                     let promise = Promise<Int>(on: context)
                     let deadline = DispatchTime.now() + 0.01
                     let fulfillAt = DispatchTime.now() + 0.02
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: fulfillAt) {
                         promise.fulfill(100)
                     }
@@ -78,12 +76,12 @@ class TimeoutTestSpec: QuickSpec {
                     }
                 }
             }
-			it("returns a promise that is rejected immediately after original promise is rejected") {
+            it("returns a promise that is rejected immediately after original promise is rejected") {
                 expectError { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
                     let deadline = DispatchTime.now() + 0.02
                     let rejectAt = DispatchTime.now() + 0.01
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: rejectAt) {
                         promise.reject(MockError())
                     }
@@ -102,27 +100,27 @@ class TimeoutTestSpec: QuickSpec {
         }
 
         describe("'timeout'") {
-			it("returns a promise that is fulfilled as soon as  original promise is fulfilled, within timeout") {
+            it("returns a promise that is fulfilled as soon as  original promise is fulfilled, within timeout") {
                 noErrors { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    let now : dispatch_time_t = DispatchTime.now().rawValue
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    let now: dispatch_time_t = DispatchTime.now().rawValue
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         promise.fulfill(100)
                     }
                     return promise.timeout(0.02).then { (value) -> Int in
                         fulfilledAfterDelayAt = DispatchTime.now().rawValue
                         expect(value).to(equal(100))
-                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 10000000))
-                        expect(fulfilledAfterDelayAt).to(beLessThan(now + 20000000))
+                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 10_000_000))
+                        expect(fulfilledAfterDelayAt).to(beLessThan(now + 20_000_000))
                         return value
                     }
                 }
             }
-			it("returns a promise that is rejected with TimeoutError if original promise is not fulfilled within timeout") {
+            it("returns a promise that is rejected with TimeoutError if original promise is not fulfilled within timeout") {
                 expectError(type: TimeoutError.self) { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                         promise.fulfill(100)
                     }
@@ -135,10 +133,10 @@ class TimeoutTestSpec: QuickSpec {
                     }
                 }
             }
-			it("can specify error to use instead of TimeoutError") {
+            it("can specify error to use instead of TimeoutError") {
                 expectError(type: MockError.self) { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                         promise.fulfill(100)
                     }
@@ -154,29 +152,29 @@ class TimeoutTestSpec: QuickSpec {
         }
 
         describe("'timeout' with deadline") {
-			it("returns a promise that is fulfilled as soon as  original promise is fulfilled before deadline") {
+            it("returns a promise that is fulfilled as soon as  original promise is fulfilled before deadline") {
                 noErrors { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    let now : dispatch_time_t = DispatchTime.now().rawValue
+                    let now: dispatch_time_t = DispatchTime.now().rawValue
                     let deadline = DispatchTime.now() + 0.02
 
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         promise.fulfill(100)
                     }
                     return promise.timeout(deadline: deadline).then { (value) -> Int in
                         fulfilledAfterDelayAt = DispatchTime.now().rawValue
                         expect(value).to(equal(100))
-                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 10000000))
-                        expect(fulfilledAfterDelayAt).to(beLessThan(now + 20000000))
+                        expect(fulfilledAfterDelayAt).to(beGreaterThanOrEqualTo(now + 10_000_000))
+                        expect(fulfilledAfterDelayAt).to(beLessThan(now + 20_000_000))
                         return value
                     }
                 }
             }
-			it("returns a promise that is rejected with TimeoutError if original promise is not fulfilled before dedline") {
+            it("returns a promise that is rejected with TimeoutError if original promise is not fulfilled before dedline") {
                 expectError(type: TimeoutError.self) { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     let deadline = DispatchTime.now() + 0.01
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                         promise.fulfill(100)
@@ -190,10 +188,10 @@ class TimeoutTestSpec: QuickSpec {
                     }
                 }
             }
-			it("can specify error to use instead of TimeoutError") {
+            it("can specify error to use instead of TimeoutError") {
                 expectError(type: MockError.self) { () -> Promise<Int> in
                     let promise = Promise<Int>(on: context)
-                    var fulfilledAfterDelayAt : dispatch_time_t = 0
+                    var fulfilledAfterDelayAt: dispatch_time_t = 0
                     let deadline = DispatchTime.now() + 0.01
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                         promise.fulfill(100)
@@ -210,5 +208,3 @@ class TimeoutTestSpec: QuickSpec {
         }
     }
 }
-
-
